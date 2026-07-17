@@ -40,10 +40,12 @@ com/qm/integration/im/feishu/FeishuClient.class
 com/qm/requirement/mapper/AcceptanceCriteriaMapper.class
 com/qm/workflow/WorkflowController.class
 com/qm/requirement/entity/RequirementStakeholder.class
+com/qm/notify/NotificationService.class
 com/qm/workflow/mapper/BaselineMapper.class
 com/qm/requirement/entity/Requirement.class
 com/qm/groupengine/mapper/RequirementGroupMapper.class
 com/qm/audit/entity/AuditLog.class
+com/qm/notify/NotificationController.class
 com/qm/integration/im/feishu/FeishuGroupService.class
 com/qm/archiver/MessageArchiveController.class
 com/qm/requirement/mapper/RequirementStakeholderMapper.class
