@@ -2,12 +2,15 @@ com/qm/workflow/entity/Baseline.class
 com/qm/notify/mapper/NotificationMapper.class
 com/qm/common/Result.class
 com/qm/workflow/mapper/ChangeRequestMapper.class
+com/qm/search/SearchController.class
 com/qm/requirement/mapper/RequirementMapper.class
 com/qm/workflow/entity/ReviewFlow.class
+com/qm/org/AuthController.class
 com/qm/org/entity/User.class
 com/qm/QmApplication.class
 com/qm/groupengine/entity/RequirementGroup.class
 com/qm/org/mapper/UserMapper.class
+com/qm/org/UserService.class
 com/qm/workflow/BaselineService.class
 com/qm/requirement/entity/RequirementVersion.class
 com/qm/requirement/RequirementStateMachine.class
@@ -15,8 +18,12 @@ com/qm/trace/mapper/TraceLinkMapper.class
 com/qm/common/RabbitMQConfig.class
 com/qm/common/exception/BizException.class
 com/qm/common/BaseEntity.class
+com/qm/integration/im/feishu/FeishuSsoService.class
+com/qm/search/MeilisearchService.class
+com/qm/integration/im/feishu/FeishuCardCallbackService.class
 com/qm/workflow/ReviewService.class
 com/qm/org/entity/OrgUnit.class
+com/qm/integration/im/feishu/FeishuCallbackController.class
 com/qm/common/GlobalExceptionHandler.class
 com/qm/requirement/mapper/RequirementVersionMapper.class
 com/qm/audit/mapper/AuditLogMapper.class
@@ -53,5 +60,6 @@ com/qm/archiver/mapper/MessageArchiveMapper.class
 com/qm/trace/entity/TraceLink.class
 com/qm/template/entity/Template.class
 com/qm/workflow/entity/ChangeRequest.class
+com/qm/common/MeilisearchConfig.class
 com/qm/template/mapper/TemplateMapper.class
 com/qm/archiver/entity/MessageArchive.class

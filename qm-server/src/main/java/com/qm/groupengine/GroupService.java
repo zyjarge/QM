@@ -71,6 +71,30 @@ public class GroupService {
         group.setStatus("active");
         groupMapper.insert(group);
 
+        // 拉干系人入群
+        List<String> stakeholderIds = requirementService.getStakeholders(reqId).stream()
+            .map(s -> s.getUserId())
+            .filter(id -> id != null && !id.isEmpty())
+            .toList();
+        if (!stakeholderIds.isEmpty()) {
+            try {
+                feishuGroupService.addMembers(chatId, stakeholderIds);
+                log.info("Stakeholders added: req={} count={}", reqId, stakeholderIds.size());
+            } catch (Exception e) {
+                log.warn("Failed to add stakeholders: {}", e.getMessage());
+            }
+        }
+
+        // 发送需求公告卡片到群
+        try {
+            String announcement = String.format(
+                "{\"config\":{\"wide_screen_mode\":true},\"header\":{\"title\":{\"tag\":\"plain_text\",\"content\":\"📋 %s\"}},\"elements\":[{\"tag\":\"div\",\"text\":{\"tag\":\"lark_md\",\"content\":\"**需求标题**: %s\\n**需求类型**: %s\\n**优先级**: %s\\n**创建人**: %s\"}}]}",
+                req.getReqNo(), req.getTitle(), req.getReqType(), req.getPriority(), req.getCreatedBy());
+            feishuGroupService.sendCard(chatId, announcement);
+        } catch (Exception e) {
+            log.warn("Failed to send announcement card: {}", e.getMessage());
+        }
+
         log.info("Group created: req={} chatId={} name={}", reqId, chatId, groupName);
         return group;
     }

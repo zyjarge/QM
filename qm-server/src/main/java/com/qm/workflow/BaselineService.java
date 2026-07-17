@@ -3,6 +3,7 @@ package com.qm.workflow;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qm.common.exception.BizException;
+import com.qm.integration.im.feishu.FeishuGroupService;
 import com.qm.requirement.RequirementState;
 import com.qm.requirement.RequirementService;
 import com.qm.requirement.entity.Requirement;
@@ -24,6 +25,8 @@ public class BaselineService {
 
     private final BaselineMapper baselineMapper;
     private final RequirementService requirementService;
+    private final com.qm.groupengine.GroupService groupService;
+    private final FeishuGroupService feishuGroupService;
 
     public Baseline getCurrentBaseline(String reqId) {
         return baselineMapper.selectOne(
