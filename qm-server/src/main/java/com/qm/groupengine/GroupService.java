@@ -31,6 +31,13 @@ public class GroupService {
                 .last("LIMIT 1"));
     }
 
+    public RequirementGroup getByChatId(String chatId) {
+        return groupMapper.selectOne(
+            new LambdaQueryWrapper<RequirementGroup>()
+                .eq(RequirementGroup::getChatId, chatId)
+                .last("LIMIT 1"));
+    }
+
     @Transactional
     public RequirementGroup createGroup(String reqId, String operatorId) {
         Requirement req = requirementService.getById(reqId);

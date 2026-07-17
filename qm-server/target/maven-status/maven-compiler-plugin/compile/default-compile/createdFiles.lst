@@ -12,6 +12,7 @@ com/qm/workflow/BaselineService.class
 com/qm/requirement/entity/RequirementVersion.class
 com/qm/requirement/RequirementStateMachine.class
 com/qm/trace/mapper/TraceLinkMapper.class
+com/qm/common/RabbitMQConfig.class
 com/qm/common/exception/BizException.class
 com/qm/common/BaseEntity.class
 com/qm/workflow/ReviewService.class
@@ -32,6 +33,7 @@ com/qm/org/mapper/OrgUnitMapper.class
 com/qm/common/handler/JsonbTypeHandler.class
 com/qm/notify/entity/Notification.class
 com/qm/requirement/entity/AcceptanceCriteria.class
+com/qm/archiver/MessageArchiveService.class
 com/qm/common/HealthController.class
 com/qm/groupengine/GroupController.class
 com/qm/integration/im/feishu/FeishuClient.class
@@ -43,6 +45,7 @@ com/qm/requirement/entity/Requirement.class
 com/qm/groupengine/mapper/RequirementGroupMapper.class
 com/qm/audit/entity/AuditLog.class
 com/qm/integration/im/feishu/FeishuGroupService.class
+com/qm/archiver/MessageArchiveController.class
 com/qm/requirement/mapper/RequirementStakeholderMapper.class
 com/qm/archiver/mapper/MessageArchiveMapper.class
 com/qm/trace/entity/TraceLink.class

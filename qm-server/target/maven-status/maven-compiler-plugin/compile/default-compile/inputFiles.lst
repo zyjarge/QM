@@ -1,4 +1,6 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/QmApplication.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/archiver/MessageArchiveController.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/archiver/MessageArchiveService.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/archiver/entity/MessageArchive.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/archiver/mapper/MessageArchiveMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/audit/entity/AuditLog.java
@@ -7,11 +9,13 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/GlobalExceptionHandler.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/HealthController.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/MyMetaObjectHandler.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/common/RabbitMQConfig.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/Result.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/exception/BizException.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/handler/JsonbTypeHandler.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/GroupController.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/GroupService.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/GroupServicePatch.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/entity/RequirementGroup.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/mapper/RequirementGroupMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuClient.java
