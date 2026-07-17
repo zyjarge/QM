@@ -20,6 +20,7 @@ com/qm/common/GlobalExceptionHandler.class
 com/qm/requirement/mapper/RequirementVersionMapper.class
 com/qm/audit/mapper/AuditLogMapper.class
 com/qm/workflow/mapper/ReviewVoteMapper.class
+com/qm/groupengine/GroupService.class
 com/qm/requirement/RequirementState$1.class
 com/qm/requirement/RequirementService.class
 com/qm/common/MyMetaObjectHandler.class
@@ -32,6 +33,7 @@ com/qm/common/handler/JsonbTypeHandler.class
 com/qm/notify/entity/Notification.class
 com/qm/requirement/entity/AcceptanceCriteria.class
 com/qm/common/HealthController.class
+com/qm/groupengine/GroupController.class
 com/qm/integration/im/feishu/FeishuClient.class
 com/qm/requirement/mapper/AcceptanceCriteriaMapper.class
 com/qm/workflow/WorkflowController.class

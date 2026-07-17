@@ -10,6 +10,8 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/Result.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/exception/BizException.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/handler/JsonbTypeHandler.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/GroupController.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/GroupService.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/entity/RequirementGroup.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/mapper/RequirementGroupMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuClient.java
