@@ -16,6 +16,7 @@
 | 05 | [API 设计清单](docs/05-api-design.md) | REST API 全集、错误码、幂等约定 |
 | 06 | [安全与权限](docs/06-security-permissions.md) | RBAC、审计、合规、上线检查表 |
 | 07 | [分期路线与验收标准](docs/07-roadmap.md) | 技术红线验证、P0-P3 路线、验收标准 |
+| 08 | [产品应用组件与输出物](docs/08-product-outputs.md) | 应用组件、输出物清单、角色视角 |
 
 ## 核心设计速览
 
@@ -36,9 +37,9 @@ Java 17 · Spring Boot 3 · PostgreSQL 16 · Redis · RabbitMQ · Meilisearch ·
 
 ## 当前状态
 
-- [x] 设计文档 v1.0
-- [ ] 技术红线验证（V1-V6，见 07 文档 §0）
-- [ ] P0 开发
+- [x] 设计文档 v1.0（9 篇）
+- [x] 飞书技术红线验证 V0-V5 通过
+- [ ] P0 开发（待启动）
 
 ---
 *设计基线日期：2026-07-17*
