@@ -47,7 +47,7 @@ public class MeilisearchService {
             String settingsUrl = config.getHost() + "/indexes/" + MeilisearchConfig.INDEX_REQUIREMENTS + "/settings";
             Map<String, Object> settings = Map.of(
                 "searchableAttributes", List.of("title", "reqNo", "reqType", "priority", "productLine", "createdBy"),
-                "filterableAttributes", List.of("status", "priority", "reqType", "productLine")
+                "filterableAttributes", List.of("status", "priority", "reqType", "productLine", "createdBy")
             );
             restTemplate.exchange(settingsUrl, HttpMethod.PATCH, new HttpEntity<>(settings, headers), String.class);
             log.info("Meili index settings updated");
