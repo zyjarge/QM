@@ -35,11 +35,45 @@
 
 Java 17 · Spring Boot 3 · PostgreSQL 16 · Redis · RabbitMQ · Meilisearch · MinIO · React 18 + TipTap · Docker Compose · 飞书 OpenAPI（P1 接企微）
 
+## 本地开发
+
+```bash
+# 1. 启动中间件栈（PG16+pgvector / Redis / RabbitMQ / Meilisearch / MinIO）
+docker compose -f docker-compose.dev.yml up -d
+
+# 2. 初始化表结构（pgvector 扩展由容器自动安装，DDL 需手工执行一次）
+psql -h localhost -U qm -d qm -f qm-server/initdb/02-ddl.sql
+
+# 3. 启动后端（Java 17，需飞书应用凭证）
+export FEISHU_APP_ID=<your-app-id> FEISHU_APP_SECRET=<your-app-secret>
+cd qm-server && mvn spring-boot:run        # http://localhost:8080
+
+# 4. 启动前端（/api 代理目标见 vite.config.ts）
+cd qm-web && npm install && npm run dev    # http://localhost:3000
+```
+
+备份/恢复/验证脚本见 `backups/`（每日 pg_dump 基线演练已通过）。
+
 ## 当前状态
 
 - [x] 设计文档 v1.0（9 篇）
 - [x] 飞书技术红线验证 V0-V5 通过
-- [ ] P0 开发（待启动）
+- [x] A9 备份恢复演练通过
+- [ ] P0 开发（进行中）
+
+### P0 进度速览
+
+| 模块 | 状态 |
+|---|---|
+| 需求域（CRUD / 版本 / 内容指纹 / 12 态状态机） | ✅ 已实现 |
+| 评审 + 基线签认（卡片回调 / 幂等 / 越权校验） | ✅ 已实现 |
+| 群引擎（自动建群 / 解散，飞书真实 API 联调通过） | ✅ 已实现 |
+| 组织域 + 飞书 SSO 免登 | ✅ 已实现 |
+| Meilisearch 搜索 | ✅ 已实现 |
+| 书记员归档（MQ 消费 + 消息幂等） | ⚠️ 消费端就绪，飞书事件生产端待接 |
+| 通知域 | ⚠️ 落库可用，IM 投递待接 |
+| Web 前端（需求池 / 详情 / 创建 / 通知 / 登录） | ⚠️ 骨架可用，评审/签认等业务操作待填 |
+| 变更管理 / 审计落地 / 回调验签 | ⬜ 待开发 |
 
 ---
 *设计基线日期：2026-07-17*
