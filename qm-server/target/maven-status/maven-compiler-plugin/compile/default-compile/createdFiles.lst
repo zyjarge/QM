@@ -8,11 +8,13 @@ com/qm/org/entity/User.class
 com/qm/QmApplication.class
 com/qm/groupengine/entity/RequirementGroup.class
 com/qm/org/mapper/UserMapper.class
+com/qm/workflow/BaselineService.class
 com/qm/requirement/entity/RequirementVersion.class
 com/qm/requirement/RequirementStateMachine.class
 com/qm/trace/mapper/TraceLinkMapper.class
 com/qm/common/exception/BizException.class
 com/qm/common/BaseEntity.class
+com/qm/workflow/ReviewService.class
 com/qm/org/entity/OrgUnit.class
 com/qm/common/GlobalExceptionHandler.class
 com/qm/requirement/mapper/RequirementVersionMapper.class
@@ -32,6 +34,7 @@ com/qm/requirement/entity/AcceptanceCriteria.class
 com/qm/common/HealthController.class
 com/qm/integration/im/feishu/FeishuClient.class
 com/qm/requirement/mapper/AcceptanceCriteriaMapper.class
+com/qm/workflow/WorkflowController.class
 com/qm/requirement/entity/RequirementStakeholder.class
 com/qm/workflow/mapper/BaselineMapper.class
 com/qm/requirement/entity/Requirement.class

@@ -36,6 +36,9 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/template/mapper/TemplateMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/trace/entity/TraceLink.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/trace/mapper/TraceLinkMapper.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/workflow/BaselineService.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/workflow/ReviewService.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/workflow/WorkflowController.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/workflow/entity/Baseline.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/workflow/entity/ChangeRequest.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/workflow/entity/ReviewFlow.java
