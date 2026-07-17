@@ -70,8 +70,7 @@ sa-token:
   jwt-secret-key: ${SA_JWT_SECRET:qm_jwt_secret_2026_dev_only}
 
 meilisearch:
-  host: ${MEILI_HOST:localhost}
-  port: ${MEILI_PORT:7700}
+  host: ${MEILI_URL:http://localhost:7700}
   master-key: ${MEILI_KEY:qm_dev_master_key_2026}
 
 minio:

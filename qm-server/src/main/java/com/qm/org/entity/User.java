@@ -1,6 +1,6 @@
 package com.qm.org.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.qm.common.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +14,6 @@ public class User extends BaseEntity {
     private String email;
     private String feishuOpenId;
     private String wecomUserId;
-    private String role;            // ADMIN/PM/BIZ_OWNER/DEV_LEAD/QA/REQUESTER/VIEWER
-    private String status;          // active/inactive
+    private String role;        // REQUESTER/PM/REVIEWER/ADMIN
+    private String status;      // active/inactive
 }

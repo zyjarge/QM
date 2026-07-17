@@ -4,8 +4,16 @@ const api = axios.create({
   baseURL: '/api/v1',
   headers: {
     'Content-Type': 'application/json',
-    'X-User-Id': 'test-user-001', // TODO: 从登录态获取
   },
+})
+
+// 请求拦截器：自动带上登录态
+api.interceptors.request.use((config) => {
+  const userId = localStorage.getItem('qm_user_id')
+  if (userId) {
+    config.headers['X-User-Id'] = userId
+  }
+  return config
 })
 
 api.interceptors.response.use(

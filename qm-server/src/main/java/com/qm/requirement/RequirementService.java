@@ -43,6 +43,10 @@ public class RequirementService {
         return requirementMapper.selectPage(new Page<>(page, size), wrapper);
     }
 
+    public java.util.List<Requirement> listAll() {
+        return requirementMapper.selectList(null);
+    }
+
     public Requirement getById(String id) {
         Requirement req = requirementMapper.selectById(id);
         if (req == null) throw BizException.notFound("需求");

@@ -2,6 +2,7 @@ package com.qm.workflow;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qm.common.exception.BizException;
+import com.qm.integration.im.feishu.FeishuGroupService;
 import com.qm.requirement.RequirementState;
 import com.qm.requirement.RequirementService;
 import com.qm.requirement.entity.Requirement;
@@ -25,6 +26,8 @@ public class ReviewService {
     private final ReviewFlowMapper flowMapper;
     private final ReviewVoteMapper voteMapper;
     private final RequirementService requirementService;
+    private final com.qm.groupengine.GroupService groupService;
+    private final FeishuGroupService feishuGroupService;
 
     public List<ReviewFlow> listFlows(String reqId) {
         return flowMapper.selectList(
@@ -69,8 +72,42 @@ public class ReviewService {
         // 需求状态 → reviewing
         requirementService.transition(reqId, "reviewing", operatorId, "发起评审");
 
+        // 自动发评审卡片到需求群（A2）
+        try {
+            com.qm.groupengine.entity.RequirementGroup group = groupService.getByReqId(reqId);
+            if (group != null && "active".equals(group.getStatus())) {
+                String cardJson = buildReviewCard(req, flow, voterIds);
+                feishuGroupService.sendCard(group.getChatId(), cardJson);
+                log.info("Review card sent: flow={} chatId={}", flow.getId(), group.getChatId());
+            }
+        } catch (Exception e) {
+            log.warn("Failed to send review card: {}", e.getMessage());
+        }
+
         log.info("Review started: req={} flow={} voters={}", reqId, flow.getId(), voterIds);
         return flow;
+    }
+
+    private String buildReviewCard(Requirement req, ReviewFlow flow, List<String> voterIds) {
+        String voters = String.join(", ", voterIds);
+        String actions = "";
+        for (String v : voterIds) {
+            actions += String.format(
+                "{\"tag\":\"button\",\"text\":{\"tag\":\"plain_text\",\"content\":\"✅ %s 同意\"},\"type\":\"primary\",\"value\":{\"type\":\"review\",\"id\":\"%s\",\"action\":\"approve\",\"voter\":\"%s\"}},",
+                v, flow.getId(), v);
+        }
+        actions += String.format(
+            "{\"tag\":\"button\",\"text\":{\"tag\":\"plain_text\",\"content\":\"❌ 驳回\"},\"type\":\"danger\",\"value\":{\"type\":\"review\",\"id\":\"%s\",\"action\":\"reject\"}}",
+            flow.getId());
+
+        return String.format(
+            "{\"config\":{\"wide_screen_mode\":true},\"header\":{\"template\":\"blue\",\"title\":{\"tag\":\"plain_text\",\"content\":\"📋 评审请求 %s\"}},\"elements\":[" +
+            "{\"tag\":\"div\",\"text\":{\"tag\":\"lark_md\",\"content\":\"**%s**\\n\\n%s\\n\\n**投票人**: %s\\n**模式**: %s\\n**轮次**: %d\"}}," +
+            "{\"tag\":\"action\",\"actions\":[%s]}]}",
+            req.getReqNo(), req.getTitle(),
+            req.getReqType() != null ? "类型: " + req.getReqType() : "",
+            voters, flow.getMode(), flow.getRoundNo() == null ? 1 : flow.getRoundNo(),
+            actions);
     }
 
     @Transactional
@@ -122,6 +159,27 @@ public class ReviewService {
             if (passed) {
                 requirementService.transition(flow.getRequirementId(), "pending_sign",
                     "system", "评审通过(" + approved + "/" + total + ")");
+
+                // 自动发签认卡片到群（A3）
+                try {
+                    com.qm.groupengine.entity.RequirementGroup group = groupService.getByReqId(flow.getRequirementId());
+                    Requirement req = requirementService.getById(flow.getRequirementId());
+                    if (group != null && "active".equals(group.getStatus()) && req != null) {
+                        String signCard = String.format(
+                            "{\"config\":{\"wide_screen_mode\":true},\"header\":{\"template\":\"green\",\"title\":{\"tag\":\"plain_text\",\"content\":\"✅ 评审通过 %s\"}},\"elements\":[" +
+                            "{\"tag\":\"div\",\"text\":{\"tag\":\"lark_md\",\"content\":\"**%s**\\n\\n评审已通过 (%d/%d)，请业务负责人确认基线。\"}}," +
+                            "{\"tag\":\"action\",\"actions\":[" +
+                            "{\"tag\":\"button\",\"text\":{\"tag\":\"plain_text\",\"content\":\"✅ 确认基线\"},\"type\":\"primary\",\"value\":{\"type\":\"baseline\",\"id\":\"%s\",\"action\":\"sign\"}}," +
+                            "{\"tag\":\"button\",\"text\":{\"tag\":\"plain_text\",\"content\":\"❌ 驳回\"},\"type\":\"danger\",\"value\":{\"type\":\"baseline\",\"id\":\"%s\",\"action\":\"reject\"}}" +
+                            "]}]}",
+                            req.getReqNo(), req.getTitle(), approved, total,
+                            flow.getRequirementId(), flow.getRequirementId());
+                        feishuGroupService.sendCard(group.getChatId(), signCard);
+                        log.info("Sign card sent: req={} chatId={}", req.getId(), group.getChatId());
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to send sign card: {}", e.getMessage());
+                }
             } else {
                 requirementService.transition(flow.getRequirementId(), "clarifying",
                     "system", "评审拒绝(" + rejected + "/" + total + ")");

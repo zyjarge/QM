@@ -8,6 +8,7 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/BaseEntity.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/GlobalExceptionHandler.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/HealthController.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/common/MeilisearchConfig.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/MyMetaObjectHandler.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/RabbitMQConfig.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/common/Result.java
@@ -18,12 +19,17 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/GroupServicePatch.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/entity/RequirementGroup.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/groupengine/mapper/RequirementGroupMapper.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuCallbackController.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuCardCallbackService.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuClient.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuGroupService.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/integration/im/feishu/FeishuSsoService.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/notify/NotificationController.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/notify/NotificationService.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/notify/entity/Notification.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/notify/mapper/NotificationMapper.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/org/AuthController.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/org/UserService.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/org/entity/OrgUnit.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/org/entity/User.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/org/mapper/OrgUnitMapper.java
@@ -40,6 +46,8 @@
 /root/workspace/QM/qm-server/src/main/java/com/qm/requirement/mapper/RequirementMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/requirement/mapper/RequirementStakeholderMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/requirement/mapper/RequirementVersionMapper.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/search/MeilisearchService.java
+/root/workspace/QM/qm-server/src/main/java/com/qm/search/SearchController.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/template/entity/Template.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/template/mapper/TemplateMapper.java
 /root/workspace/QM/qm-server/src/main/java/com/qm/trace/entity/TraceLink.java

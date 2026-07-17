@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,6 +45,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleNotReadable(HttpMessageNotReadableException e) {
         return Result.error("QM-1001", "请求体格式错误");
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Result<?> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        return Result.error("QM-1002", "请求方法不支持: " + e.getMethod());
     }
 
     @ExceptionHandler(JSONException.class)
