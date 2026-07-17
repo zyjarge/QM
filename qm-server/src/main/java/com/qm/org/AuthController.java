@@ -31,10 +31,19 @@ public class AuthController {
     @PostMapping("/feishu/login")
     public Result<User> feishuLogin(@RequestBody Map<String, String> body) {
         String code = body.get("code");
+        String redirectUri = body.get("redirectUri");
         if (code == null || code.isEmpty()) {
             return Result.error("QM-4001", "code 不能为空");
         }
-        User user = feishuSsoService.loginByCode(code);
-        return Result.ok(user);
+        if (redirectUri == null || redirectUri.isEmpty()) {
+            return Result.error("QM-4002", "redirectUri 不能为空");
+        }
+        try {
+            User user = feishuSsoService.loginByCode(code, redirectUri);
+            return Result.ok(user);
+        } catch (Exception e) {
+            log.error("Feishu login failed", e);
+            return Result.error("QM-4000", e.getMessage());
+        }
     }
 }
