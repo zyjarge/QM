@@ -1,0 +1,112 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: qm-server
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:qm}?currentSchema=public
+    username: ${DB_USER:qm}
+    password: ${DB_PASS:qm_dev_2026}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:}
+    database: 0
+    timeout: 5000
+  rabbitmq:
+    host: ${MQ_HOST:localhost}
+    port: ${MQ_PORT:5672}
+    username: ${MQ_USER:qm}
+    password: ${MQ_PASS:qm_dev_2026}
+    virtual-host: ${MQ_VHOST:/}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3000
+          max-attempts: 3
+          max-interval: 10000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: assign_uuid
+      logic-delete-field: deletedAt
+      logic-delete-value: "NOW()"
+      logic-not-delete-value: "NULL"
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-handlers-package: com.baomidou.mybatisplus.extension.handlers
+
+sa-token:
+  token-name: Authorization
+  timeout: 86400
+  active-timeout: 3600
+  is-concurrent: false
+  is-share: false
+  token-style: uuid
+  is-log: false
+  jwt-secret-key: ${SA_JWT_SECRET:qm_jwt_secret_2026_dev_only}
+
+meilisearch:
+  host: ${MEILI_HOST:localhost}
+  port: ${MEILI_PORT:7700}
+  master-key: ${MEILI_KEY:qm_dev_master_key_2026}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:localhost}
+  port: ${MINIO_PORT:9000}
+  access-key: ${MINIO_USER:qmadmin}
+  secret-key: ${MINIO_PASS:qm_dev_2026_pass}
+  bucket-attachments: qm-attachments
+  bucket-archives: qm-archives
+
+qm:
+  feishu:
+    app-id: ${FEISHU_APP_ID:}
+    app-secret: ${FEISHU_APP_SECRET:}
+    encrypt-key: ${FEISHU_ENCRYPT_KEY:}
+    verification-token: ${FEISHU_VERIFY_TOKEN:}
+  llm:
+    api-url: ${LLM_API_URL:}
+    api-key: ${LLM_API_KEY:}
+    model: ${LLM_MODEL:deepseek-chat}
+
+logging:
+  level:
+    root: INFO
+    com.qm: DEBUG
+    org.apache.ibatis: WARN
+    org.springframework.amqp: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
