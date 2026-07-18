@@ -91,6 +91,10 @@ qm:
     api-url: ${LLM_API_URL:}
     api-key: ${LLM_API_KEY:}
     model: ${LLM_MODEL:deepseek-chat}
+  timeout:
+    # 评审超时档位（TTL+DLX 延迟队列）：默认 48h 提醒 / 72h 升级，可用环境变量覆盖（测试可调到秒级）
+    review-remind-ms: ${TIMEOUT_REVIEW_REMIND_MS:172800000}
+    review-escalate-ms: ${TIMEOUT_REVIEW_ESCALATE_MS:259200000}
 
 logging:
   level:
