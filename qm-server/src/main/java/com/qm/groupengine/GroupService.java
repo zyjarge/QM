@@ -1,6 +1,7 @@
 package com.qm.groupengine;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.qm.archiver.ArchiveExportService;
 import com.qm.common.exception.BizException;
 import com.qm.groupengine.entity.RequirementGroup;
 import com.qm.groupengine.mapper.RequirementGroupMapper;
@@ -23,6 +24,7 @@ public class GroupService {
     private final RequirementGroupMapper groupMapper;
     private final FeishuGroupService feishuGroupService;
     private final RequirementService requirementService;
+    private final ArchiveExportService archiveExportService;
 
     public RequirementGroup getByReqId(String reqId) {
         return groupMapper.selectOne(
@@ -106,6 +108,10 @@ public class GroupService {
             return; // 幂等
         }
 
+        // 先导出群档案到 MinIO：导出失败则中止解散，保证"归档永不丢失"
+        String archivePath = archiveExportService.exportRequirementArchive(reqId);
+        group.setArchivePath(archivePath);
+
         // 调用飞书解散群
         feishuGroupService.dissolveGroup(group.getChatId());
 
@@ -114,7 +120,7 @@ public class GroupService {
         group.setDissolvedAt(LocalDateTime.now());
         groupMapper.updateById(group);
 
-        log.info("Group dissolved: req={} chatId={}", reqId, group.getChatId());
+        log.info("Group dissolved: req={} chatId={} archive={}", reqId, group.getChatId(), archivePath);
     }
 
     public List<RequirementGroup> listActiveGroups() {
