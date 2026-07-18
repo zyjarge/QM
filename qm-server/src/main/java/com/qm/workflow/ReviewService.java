@@ -1,6 +1,7 @@
 package com.qm.workflow;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.qm.common.RabbitMQConfig;
 import com.qm.common.exception.BizException;
 import com.qm.integration.im.feishu.FeishuGroupService;
 import com.qm.requirement.RequirementState;
@@ -28,6 +29,7 @@ public class ReviewService {
     private final RequirementService requirementService;
     private final com.qm.groupengine.GroupService groupService;
     private final FeishuGroupService feishuGroupService;
+    private final org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate;
 
     public List<ReviewFlow> listFlows(String reqId) {
         return flowMapper.selectList(
@@ -71,6 +73,12 @@ public class ReviewService {
 
         // 需求状态 → reviewing
         requirementService.transition(reqId, "reviewing", operatorId, "发起评审");
+
+        // 投两档超时检查（48h 提醒 / 72h 升级，TTL+DLX 延迟队列，到期未完成才触发）
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.RK_DELAY_REVIEW_REMIND,
+            java.util.Map.of("flowId", flow.getId(), "reqId", reqId, "tier", "remind"));
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.RK_DELAY_REVIEW_ESCALATE,
+            java.util.Map.of("flowId", flow.getId(), "reqId", reqId, "tier", "escalate"));
 
         // 自动发评审卡片到需求群（A2）
         try {
