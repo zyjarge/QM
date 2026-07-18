@@ -25,6 +25,7 @@ import java.util.Map;
 public class FeishuCallbackController {
 
     private final FeishuCardCallbackService cardCallbackService;
+    private final FeishuMessageEventService messageEventService;
 
     /**
      * 飞书事件回调统一入口
@@ -65,8 +66,9 @@ public class FeishuCallbackController {
                 return Map.of("challenge", body.getString("challenge"));
             }
 
-            // 消息事件（群消息归档 - 已由书记员处理）
+            // 消息事件（书记员归档：投递 MQ，由 MessageArchiveService 消费）
             if ("im.message.receive_v1".equals(eventType)) {
+                messageEventService.onMessageReceive(body.getJSONObject("event"));
                 return Map.of("code", 0, "msg", "ok");
             }
 
