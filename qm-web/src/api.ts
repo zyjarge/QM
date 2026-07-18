@@ -48,3 +48,61 @@ export interface Page<T> {
   current: number
   size: number
 }
+
+export interface RequirementVersion {
+  id: string
+  requirementId: string
+  versionNo: number
+  content?: string
+  contentText?: string
+  contentHash?: string
+  fieldsData?: string
+  editedBy?: string
+  changeSummary?: string
+  createdAt: string
+}
+
+export interface ReviewFlow {
+  id: string
+  requirementId: string
+  roundNo?: number
+  reviewType: string // tech/biz/final
+  mode: string // all(会签)/any(或签)
+  status: string // in_progress/passed/rejected/cancelled
+  startedAt?: string
+  finishedAt?: string
+  createdAt: string
+}
+
+export interface ReviewVote {
+  id: string
+  flowId: string
+  voterId: string
+  decision: string // approve/reject/abstain/pending
+  comment?: string
+  votedAt?: string
+}
+
+export interface Baseline {
+  id: string
+  requirementId: string
+  versionId: string
+  contentHash: string
+  snapshot?: string
+  signedBy: string
+  signedAt: string
+  signatureMeta?: string
+}
+
+export interface MessageArchive {
+  id: number
+  requirementId: string
+  imMsgId?: string
+  imProvider?: string
+  senderId?: string
+  msgType: string // text/card/file/image/audio/video
+  contentText?: string
+  isKeyInfo?: boolean
+  msgTime?: string
+  createdAt: string
+}
