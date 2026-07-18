@@ -95,14 +95,14 @@ public class FeishuSecurityService {
     }
 
     /**
-     * url_verification 的 token 校验：配置了 verification-token 时要求 body.token 一致
+     * url_verification 的 token 校验：配置了 verification-token 时要求 body.token 一致（缺失也拒绝）
      */
     public void checkVerificationToken(JSONObject body) {
         if (verificationToken == null || verificationToken.isEmpty()) {
             return;
         }
         String token = body == null ? null : body.getString("token");
-        if (token != null && !verificationToken.equals(token)) {
+        if (!verificationToken.equals(token)) {
             throw BizException.forbidden("verification token 不匹配");
         }
     }

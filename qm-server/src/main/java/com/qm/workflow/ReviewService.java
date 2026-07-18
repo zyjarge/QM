@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qm.common.RabbitMQConfig;
 import com.qm.common.exception.BizException;
 import com.qm.integration.im.feishu.FeishuGroupService;
+import com.qm.org.entity.User;
 import com.qm.requirement.RequirementState;
 import com.qm.requirement.RequirementService;
 import com.qm.requirement.entity.Requirement;
@@ -30,6 +31,16 @@ public class ReviewService {
     private final com.qm.groupengine.GroupService groupService;
     private final FeishuGroupService feishuGroupService;
     private final org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate;
+    private final com.qm.org.UserService userService;
+
+    private ReviewVote findPendingVote(String flowId, String voterId) {
+        return voteMapper.selectOne(
+            new LambdaQueryWrapper<ReviewVote>()
+                .eq(ReviewVote::getFlowId, flowId)
+                .eq(ReviewVote::getVoterId, voterId)
+                .eq(ReviewVote::getDecision, "pending")
+                .last("LIMIT 1"));
+    }
 
     public List<ReviewFlow> listFlows(String reqId) {
         return flowMapper.selectList(
@@ -122,11 +133,19 @@ public class ReviewService {
     public ReviewVote castVote(String flowId, String voterId, String decision,
                                 String comment, String operatorId) {
         // 幂等校验
-        ReviewVote existing = voteMapper.selectOne(
-            new LambdaQueryWrapper<ReviewVote>()
-                .eq(ReviewVote::getFlowId, flowId)
-                .eq(ReviewVote::getVoterId, voterId)
-                .eq(ReviewVote::getDecision, "pending"));
+        ReviewVote existing = findPendingVote(flowId, voterId);
+        if (existing == null) {
+            // 身份兼容：卡片回调传 open_id、Web 端传用户 id，两种身份都尝试匹配
+            User byOpenId = userService.getByFeishuOpenId(voterId);
+            String altId = byOpenId != null ? byOpenId.getId() : null;
+            if (altId == null) {
+                User byId = userService.getById(voterId);
+                altId = byId != null ? byId.getFeishuOpenId() : null;
+            }
+            if (altId != null) {
+                existing = findPendingVote(flowId, altId);
+            }
+        }
         if (existing == null) {
             throw BizException.illegalState("您已投过票或不在评审名单中");
         }
