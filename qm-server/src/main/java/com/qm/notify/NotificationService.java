@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qm.common.RabbitMQConfig;
+import com.qm.integration.im.feishu.FeishuGroupService;
 import com.qm.notify.entity.Notification;
 import com.qm.notify.mapper.NotificationMapper;
+import com.qm.org.UserService;
+import com.qm.org.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,6 +27,8 @@ public class NotificationService {
 
     private final NotificationMapper notificationMapper;
     private final RabbitTemplate rabbitTemplate;
+    private final UserService userService;
+    private final FeishuGroupService feishuGroupService;
 
     /**
      * 发送通知（入 DB + 入 MQ 异步投递）
@@ -43,13 +48,13 @@ public class NotificationService {
         n.setPayload(mergedPayload);
         notificationMapper.insert(n);
 
-        // 如果是 IM 渠道，发 MQ 异步投递
-        if ("feishu".equals(channel) || "wecom".equals(channel)) {
+        // 非 web 渠道（feishu/wecom/im_card 等）发 MQ 异步投递
+        if (!"web".equals(n.getChannel())) {
             rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.RK_NOTIFY,
                 Map.of("notificationId", n.getId(), "userId", userId,
-                       "channel", channel, "title", title, "content", content)
+                       "channel", n.getChannel(), "title", title, "content", content)
             );
         }
 
@@ -58,17 +63,30 @@ public class NotificationService {
     }
 
     /**
-     * 消费 MQ 通知，投递到 IM
+     * 消费 MQ 通知，投递到 IM（当前支持飞书私聊；wecom 待 P1）
+     * 投递失败抛异常触发 MQ 重试（默认 3 次），通知的 web 未读状态不受投递影响
      */
     @RabbitListener(queues = "qm.notify")
     public void deliverToIm(Map<String, Object> msg) {
         String channel = (String) msg.get("channel");
         String userId = (String) msg.get("userId");
         String title = (String) msg.get("title");
-        
-        // TODO: 实际调用飞书/企微 API 发送私信
-        // P0 先只记录日志，P1 接入真实 IM 投递
-        log.info("Delivering to IM: channel={} user={} title={}", channel, userId, title);
+        String content = (String) msg.get("content");
+
+        if ("wecom".equals(channel)) {
+            log.debug("Wecom delivery not supported yet (P1): user={}", userId);
+            return;
+        }
+
+        User user = userService.getById(userId);
+        if (user == null || user.getFeishuOpenId() == null) {
+            log.warn("IM delivery skipped, user has no feishu_open_id: userId={}", userId);
+            return;
+        }
+
+        String text = "【" + title + "】\n" + (content == null ? "" : content);
+        String msgId = feishuGroupService.sendPrivateText(user.getFeishuOpenId(), text);
+        log.info("Notification delivered to feishu: user={} msgId={} title={}", userId, msgId, title);
     }
 
     /**

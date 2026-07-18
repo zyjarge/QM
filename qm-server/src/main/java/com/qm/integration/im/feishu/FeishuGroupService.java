@@ -85,6 +85,24 @@ public class FeishuGroupService {
         return resp.getJSONObject("data").getString("message_id");
     }
 
+    /**
+     * 给用户发私聊文本消息（通知投递用）
+     */
+    public String sendPrivateText(String openId, String text) {
+        JSONObject content = new JSONObject();
+        content.put("text", text);
+        JSONObject body = new JSONObject();
+        body.put("receive_id", openId);
+        body.put("msg_type", "text");
+        body.put("content", content.toJSONString());
+
+        JSONObject resp = client.post("/im/v1/messages?receive_id_type=open_id", body);
+        if (resp.getIntValue("code") != 0) {
+            throw new RuntimeException("发私信失败: " + resp.getString("msg"));
+        }
+        return resp.getJSONObject("data").getString("message_id");
+    }
+
     public List<JSONObject> getChatMembers(String chatId) {
         JSONObject resp = client.get("/im/v1/chats/" + chatId + "/members",
             java.util.Map.of("page_size", 50));
