@@ -26,25 +26,32 @@ public class FeishuCallbackController {
 
     private final FeishuCardCallbackService cardCallbackService;
     private final FeishuMessageEventService messageEventService;
+    private final FeishuSecurityService securityService;
 
     /**
      * 飞书事件回调统一入口
      * 飞书会以 POST 发送各种事件过来：
      * - url_verification: URL 验证
      * - event: 各类事件（卡片回调/消息事件等）
+     * 安全：配置 encrypt-key 后强制验签（防伪造）+ 时间戳防重放 + 支持加密体解密
      */
     @Operation(summary = "飞书事件回调")
     @PostMapping("/callback")
-    public Object callback(@RequestBody JSONObject body,
+    public Object callback(@RequestBody String rawBody,
                            @RequestHeader(value = "X-Lark-Request-Timestamp", required = false) String timestamp,
                            @RequestHeader(value = "X-Lark-Request-Nonce", required = false) String nonce,
                            @RequestHeader(value = "X-Lark-Signature", required = false) String signature) {
+        // 验签（未配置 encrypt-key 的开发态放行）+ 解密
+        securityService.verifySignature(timestamp, nonce, signature, rawBody);
+        String plain = securityService.decryptIfNeeded(rawBody);
+        JSONObject body = JSONObject.parseObject(plain);
         log.info("Feishu callback: body={}", body.toJSONString());
 
         // URL 验证（飞书配置回调 URL 时会发一次）
         String type = body.getString("type");
         if ("url_verification".equals(type) ||
             (body.containsKey("challenge") && body.getJSONObject("header") == null)) {
+            securityService.checkVerificationToken(body);
             return Map.of("challenge", body.getString("challenge"));
         }
 
